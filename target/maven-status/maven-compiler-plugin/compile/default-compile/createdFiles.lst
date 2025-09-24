@@ -1,0 +1,4 @@
+com\example\domain\Board.class
+com\example\Game.class
+com\example\domain\Point.class
+com\example\domain\Snake.class

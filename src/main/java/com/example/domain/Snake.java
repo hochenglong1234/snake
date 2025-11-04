@@ -1,57 +1,94 @@
-package com.example.domain;
 
-import java.util.Scanner;
-
+// Snake.java
+import java.util.Deque;
 import java.util.LinkedList;
-import java.util.List;
 
 public class Snake {
-    public List<Point> body = new LinkedList<>();
-    public String direction = "RIGHT";
+    private Deque<Point> body; // head is first element
+    private Direction direction;
 
-    public Snake() {
-        body.add(new Point(10, 10));
+    public Snake(int startX, int startY, int initialLength, Direction startDir) {
+        body = new LinkedList<>();
+        direction = startDir;
+        // build initial snake horizontally/vertically depending on startDir
+        for (int i = 0; i < initialLength; i++) {
+            if (startDir == Direction.RIGHT) {
+                body.addLast(new Point(startX - (initialLength - 1) + i, startY));
+            } else if (startDir == Direction.LEFT) {
+                body.addLast(new Point(startX + (initialLength - 1) - i, startY));
+            } else if (startDir == Direction.DOWN) {
+                body.addLast(new Point(startX, startY - (initialLength - 1) + i));
+            } else { // UP
+                body.addLast(new Point(startX, startY + (initialLength - 1) - i));
+            }
+        }
     }
 
-    public void setDirection(String dir) {
-        if ((direction.equals("UP") && dir.equals("DOWN")) ||
-                (direction.equals("DOWN") && dir.equals("UP")) ||
-                (direction.equals("LEFT") && dir.equals("RIGHT")) ||
-                (direction.equals("RIGHT") && dir.equals("LEFT"))) {
+    public Deque<Point> getBody() {
+        return body;
+    }
+
+    public Point getHead() {
+        return body.peekLast(); // we added with addLast; last is head
+    }
+
+    public Direction getDirection() {
+        return direction;
+    }
+
+    public void setDirection(Direction newDir) {
+        if (newDir == null)
             return;
+        // avoid reversing directly
+        if (!newDir.isOpposite(direction)) {
+            direction = newDir;
         }
-        direction = dir;
     }
 
+    // move the snake by adding new head and removing tail unless grow==true
     public void move(boolean grow) {
-        Point head = body.get(0);
-        int x = head.x, y = head.y;
+        Point head = getHead();
+        Point newHead = null;
         switch (direction) {
-            case "UP":
-                y--;
+            case UP:
+                newHead = new Point(head.x, head.y - 1);
                 break;
-            case "DOWN":
-                y++;
+            case DOWN:
+                newHead = new Point(head.x, head.y + 1);
                 break;
-            case "LEFT":
-                x--;
+            case LEFT:
+                newHead = new Point(head.x - 1, head.y);
                 break;
-            case "RIGHT":
-                x++;
+            case RIGHT:
+                newHead = new Point(head.x + 1, head.y);
                 break;
         }
-        body.add(0, new Point(x, y));
-        if (!grow)
-            body.remove(body.size() - 1);
+        body.addLast(newHead);
+        if (!grow) {
+            body.removeFirst();
+        }
     }
 
-    public boolean isCollision(int width, int height) {
-        Point head = body.get(0);
-        if (head.x < 0 || head.x >= width || head.y < 0 || head.y >= height)
-            return true;
-        for (int i = 1; i < body.size(); i++)
-            if (head.equals(body.get(i)))
+    // check if position collides with any part of the snake
+    public boolean occupies(Point p) {
+        for (Point b : body) {
+            if (b.equals(p))
                 return true;
+        }
+        return false;
+    }
+
+    // check self-collision (head with other body parts)
+    public boolean hasSelfCollision() {
+        Point head = getHead();
+        int count = 0;
+        for (Point b : body) {
+            if (b.equals(head)) {
+                count++;
+                if (count >= 2)
+                    return true;
+            }
+        }
         return false;
     }
 }

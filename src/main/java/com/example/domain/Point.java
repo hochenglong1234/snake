@@ -1,26 +1,27 @@
-package com.example.domain;
-
-import java.util.Scanner;
-
+// Point.java
 public class Point {
-    public int x, y;
+    public int x;
+    public int y;
 
     public Point(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
-    @Override
     public boolean equals(Object o) {
-        if (o instanceof Point) {
-            Point p = (Point) o;
-            return p.x == x && p.y == y;
-        }
-        return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof Point))
+            return false;
+        Point p = (Point) o;
+        return this.x == p.x && this.y == p.y;
     }
 
-    @Override
     public int hashCode() {
-        return x * 31 + y;
+        return 31 * x + y;
+    }
+
+    public Point copy() {
+        return new Point(x, y);
     }
 }

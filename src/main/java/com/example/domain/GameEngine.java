@@ -1,5 +1,6 @@
 package com.example.domain;
 
+//import com.example.Game;
 import com.example.common.GameAction;
 
 public class GameEngine {
@@ -15,14 +16,14 @@ public class GameEngine {
         return gameStateTransitioner.processInput(currentState, action);
     }
 
-    public GameState processAutoDrop(GameState currentState) {
-        return gameStateTransitioner.processAutoDrop(currentState);
+    public GameState processAutoMove(GameState currentState) {
+        return gameStateTransitioner.processAutoMove(currentState);
     }
 
-    public boolean shouldAutoDrop(long lastDropTime) {
-        long currentTime = gameMechanicsManager.getCurrentTime();
-        return gameMechanicsManager.shouldAutoDrop(lastDropTime, currentTime);
-    }
+    // public boolean shouldAutoMove(long lastMoveTime) {
+    // long currentTime = gameMechanicsManager.getCurrentTime();
+    // return gameMechanicsManager.shouldAutoMove(lastMoveTime, currentTime);
+    // }
 
     public long getCurrentTime() {
         return gameMechanicsManager.getCurrentTime();
